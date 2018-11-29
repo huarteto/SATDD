@@ -1,1 +1,76 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package satd;
 
+import com.sun.rowset.internal.Row;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+/**
+ *
+ * @author Guillermo
+ *
+ * Clase encargada de la recolección y almacenamiento de datos
+ * 
+ * Al cargar el csv cuidado con los ;, hay que borrarlos antes desde txt
+ */
+public class BC {
+
+    private Map lista;
+    boolean firstLine = true;
+
+    enum tipoCoche {
+        vacio
+    }//Rellenar con tipos de coches
+    
+    public final static String rutaCSV = "C:\\Users\\Guillermo\\Desktop\\ACTUAL\\SATD\\9009.csv";
+    
+    public BC() throws IOException{
+        lista = new HashMap<Integer, Coche>();
+        cargarBD(rutaCSV);
+        //Aqui se creará el HashMap y se cargará la respectiva BD
+    }
+    
+    /**
+     * Metodo encargado de recorrer y cargar uno a uno los datos del CSV
+     * @param enlaceBD
+     * @throws FileNotFoundException
+     * @throws IOException 
+     */
+    private void cargarBD(String enlaceBD) throws FileNotFoundException, IOException{
+        
+        FileReader lector = new FileReader(new File(enlaceBD));
+        BufferedReader bufferContacto = new BufferedReader(lector);
+        String linea;
+        while ((linea = bufferContacto.readLine()) != null) {
+            if (!linea.isEmpty()) {
+                if(firstLine){
+                    firstLine = false;
+                }else{
+                Coche coche = new Coche(linea);
+               nuevo(coche);
+                }
+            }
+        }
+    }
+    /**
+     * Devuelve True si se inserta. Si no se inserta 'put' devuelve null y el 
+     * metodo devolvera false.
+     * @param coche
+     * @return 
+     */
+    private void nuevo(Coche coche){
+        lista.put(coche.devuelveId(), coche);
+    }  
+    
+}
